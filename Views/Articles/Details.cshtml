@@ -1,0 +1,23 @@
+@model ArticleViewModel
+
+<h1>@Model.Title</h1>
+@if (Model.ImagePath != null)
+{
+    <img src="@Model.ImagePath"
+         alt="@Model.Title"
+         class="img-fluid rounded mb-3"
+         style="max-height: 400px; object-fit: cover; width: 100%;" />
+}
+<p><strong>Category:</strong> @Model.CategoryName</p>
+<p><strong>Data publicării:</strong> @Model.PublishedAt.ToShortDateString()</p>
+<p>@Model.Content</p>
+
+<div class="mt-4 d-flex gap-2">
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Editare</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Ștergere</a>
+    }
+    
+    <a asp-action="Index" class="btn btn-sm btn-secondary">← Înapoi la listă</a>
+</div>

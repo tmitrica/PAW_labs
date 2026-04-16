@@ -1,0 +1,55 @@
+﻿@using Lab06.ViewModels
+@model HomeViewModel
+
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">Bun venit pe platforma de Știri</h1>
+    <p class="lead">Cele mai proaspete informații, direct la tine.</p>
+</div>
+
+<div class="row text-center mb-5">
+    <div class="col-md-6">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h2 class="display-5 text-primary">@Model.TotalArticles</h2>
+                <p class="fs-5 text-muted mb-0">Articole publicate</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h2 class="display-5 text-success">@Model.TotalCategories</h2>
+                <p class="fs-5 text-muted mb-0">Categorii active</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-4">Cele mai recente articole</h3>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+    @foreach (var article in Model.RecentArticles)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if (article.ImagePath != null)
+                {
+                    <img src="@article.ImagePath" class="card-img-top" alt="@article.Title" style="height: 200px; object-fit: cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@article.Title</h5>
+                    <p class="card-text text-muted">
+                        @(article.Content.Length > 100 ? article.Content[..100] + "..." : article.Content)
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a asp-controller="Articles" asp-action="Details" asp-route-id="@article.Id" class="btn btn-outline-primary btn-sm">Citește mai mult</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-4">
+    <a asp-controller="Articles" asp-action="Index" class="btn btn-primary btn-lg">Vezi toate articolele →</a>
+</div>

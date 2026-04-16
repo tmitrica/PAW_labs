@@ -1,0 +1,60 @@
+@model List<ArticleViewModel>
+
+<h1>Știri</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Adaugă articol</a>
+</p>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var article in Model)
+    {
+        <div class="col">
+            <div class="card h-100" style="cursor: pointer;">
+                @if (article.ImagePath != null)
+                {
+                    <img src="@article.ImagePath" class="card-img-top" alt="@article.Title"
+                         style="height: 200px; object-fit: cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">
+                        <a asp-action="Details" asp-route-id="@article.Id"
+                           class="stretched-link text-decoration-none text-dark">@article.Title</a>
+                    </h5>
+                    <p class="card-text">
+                        @(article.Content.Length > 100
+                            ? article.Content[..100] + "..."
+                            : article.Content)
+                    </p>
+                </div>
+                <div class="card-footer" style="position: relative; z-index: 2;">
+                    <small class="text-muted fst-italic">
+                        @article.CategoryName — @article.PublishedAt.ToShortDateString()
+                    </small>
+                    <div class="mt-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <a asp-action="Edit" asp-route-id="@article.Id" class="btn btn-sm btn-warning">Editare</a>
+                            <a asp-action="Delete" asp-route-id="@article.Id" class="btn btn-sm btn-danger">Ștergere</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="mt-4 d-flex justify-content-between align-items-center">
+    <div>
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" class="btn btn-outline-primary">← Pagina anterioară</a>
+        }
+    </div>
+    
+    <span class="text-muted">Pagina @ViewBag.CurrentPage din @ViewBag.TotalPages</span>
+    
+    <div>
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="btn btn-outline-primary">Pagina următoare →</a>
+        }
+    </div>
+</div>
