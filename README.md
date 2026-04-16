@@ -1,4 +1,4 @@
-# PAW_labs
+# Lab06
 
 ## Video Youtube
 
@@ -39,3 +39,37 @@ Interfetele ne permit sa aplicam principiul Dependency Injection (Inversarea Dep
 **Cum va ajuta aceasta structura daca adaugati un API REST sau o aplicatie mobila pe acelasi proiect?**
 Nu trebuie sa rescriem nimic din logica aplicatiei daca vrem sa lansam o aplicatie pe mobil. 
 Vom crea pur si simplu un controller nou (ex: `ArticlesApiController`) care va injecta `IArticleService`. Singura diferenta va fi ca noul controller va returna date in format JSON, in timp ce `ArticlesController`-ul actual returneaza View-uri HTML. Baza de date, Repository-ul si regulile din Service raman complet neatinse.
+
+
+# Lab07
+
+## Video Youtube
+
+https://www.youtube.com/watch?v=cSDin0z6SGw
+
+## Raspunsul la intrebari
+
+**1. De ce Logout este implementat ca `<form method="post">` si nu ca un link `<a href="/Auth/Logout">`?**
+Daca logout-ul ar fi un simplu link (GET), un site malitios ar putea ascunde acel link intr-o imagine (`<img src=".../Logout">`), iar utilizatorul ar fi delogat fara voia lui. De asemenea, browserele pot face pre-fetching la link-uri (navigand in avans pe ele pentru a incarca pagina mai repede), ceea ce ar deloga utilizatorul accidental doar navigand pe site.
+
+**2. De ce login-ul face doi pasi in loc de unul?**
+In ASP.NET Core Identity, `UserName` si `Email` sunt doua proprietati distincte in baza de date. Metoda `PasswordSignInAsync` asteapta prin definitie parametrul `UserName`, nu `Email`. De aceea, intai interogam baza de date folosind email-ul oferit in formular (pasul 1) pentru a extrage exact `UserName`-ul acelui cont, pe care abia apoi il trimitem catre functia de login pentru a valida parola si a crea sesiunea (pasul 2).
+
+**3. De ce nu este suficient sa ascunzi butoanele Edit/Delete in View?**
+Daca nu punem `[Authorize]` in controller, un utilizator rau intentionat poate trimite un request HTTP direct catre URL-ul de Edit/Delete, modificand baza de date ignorand complet interfata grafica.
+
+**4. Ce este middleware pipeline-ul in ASP.NET Core?**
+Middleware pipeline-ul reprezinta un lant de componente prin care trece fiecare request HTTP intrat in aplicatie (si response-ul asociat) pentru a fi procesat secvential.
+
+**5. Ce am fi trebuit sa implementam manual daca nu foloseam ASP.NET Core Identity?**
+Fara Identity, ar fi trebuit sa scriem de la zero:
+- Tabelele si modelele pentru utilizatori si roluri din baza de date.
+- Algoritmi de criptare pentru parole (salvarea parolelor in plain-text fiind o vulnerabilitate critica).
+- Logica de generare, criptare, validare si stergere a cookie-urilor de sesiune la fiecare request.
+- Sisteme de tip Lockout, confirmarea email-urilor si resetarea parolei prin token-uri unice.
+
+**6. Care sunt dezavantajele folosirii ASP.NET Core Identity?**
+
+- Genereaza o schema fixa cu multe tabele in baza de date, care poate fi foarte greu de modificat sau de integrat intr-un proiect cu o baza de date preexistenta complet diferita.
+- Este construit in primul rand pentru aplicatii web traditionale (MVC/Razor Pages) care folosesc sistemul clasic de Cookies.
+- Daca doresti sa expui un API consumat de o aplicatie de mobil (Android/iOS) sau de un framework frontend tip Angular, autentificarea pe baza de Cookies devine problematica.
